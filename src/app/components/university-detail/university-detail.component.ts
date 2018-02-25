@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef }		from '@angular/core';
+import { Component, ChangeDetectorRef }		from '@angular/core';
 import { ActivatedRoute, ParamMap }       			from '@angular/router';
 import { Location }                       			from '@angular/common';
 
@@ -12,7 +12,7 @@ import { UniversityService }                		from '../../services/university/un
   templateUrl: './university-detail.component.html',
   styleUrls: [ './university-detail.component.css' ]
 })
-export class UniversityDetailComponent implements OnInit {
+export class UniversityDetailComponent /* implements OnInit, AfterViewInit */ {
   university: University;
 
   constructor(private changeDetectorRef: ChangeDetectorRef,
@@ -20,34 +20,28 @@ export class UniversityDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location
   ) {
-	console.log('UniversityDetailComponent constructor');
-    this.route.paramMap
-      .switchMap((params: ParamMap) => {
-		  console.log('UniversityDetailComponent: id is', params.get('id'));
-		  return this.universityService.getUniversity(+params.get('id'));
-	  })
-      //.switchMap((params: ParamMap) => this.universityService.getUniversity(params.get('id')))
-      .subscribe(university => {
-		  console.log('UniversityDetailComponent: university is', university);
-		  this.university = university;
-		  this.changeDetectorRef.detectChanges();			// !!! This is necessary.
-	  });
+	//console.log('UniversityDetailComponent constructor');
+	this.loadDataAndDisplayIt();
   }
 
   ngOnInit(): void {
-	/*
+  }
+
+  // ngOnChanges
+
+  // ngAfterViewInit(): void {
+	// this.loadDataAndDisplayIt();
+  // }
+
+  loadDataAndDisplayIt(): void {
     this.route.paramMap
-      .switchMap((params: ParamMap) => {
-		  console.log('UniversityDetailComponent: id is', params.get('id'));
-		  return this.universityService.getUniversity(+params.get('id'));
-	  })
-      //.switchMap((params: ParamMap) => this.universityService.getUniversity(params.get('id')))
+	  // Note: the + in front of params.get('id') converts the ID from a string to an int.
+      .switchMap((params: ParamMap) => this.universityService.getUniversity(+params.get('id')))
       .subscribe(university => {
-		  console.log('UniversityDetailComponent: university is', university);
+		  //console.log('UniversityDetailComponent: university is', university);
 		  this.university = university;
 		  this.changeDetectorRef.detectChanges();			// !!! This is necessary.
 	  });
-	*/
   }
 
   /* save(): void {

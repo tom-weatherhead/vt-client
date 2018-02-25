@@ -29,6 +29,8 @@
     <button (click)="goToChart(10)">Chart 10</button>
     <button (click)="goToChart(11)">Chart 11</button>
 
+	<!-- TODO: Force the bar chart labels to change when navigating from chart 1-5 to chart 11, or vice versa -->
+
     <div *ngIf="showChart">
       <div *ngIf="chartType=='bar'">
         <div style="display: block">
@@ -54,6 +56,20 @@
                   (chartClick)="chartClicked($event)"></canvas>
         </div>
       </div>
-    </div>
+
+      <div *ngIf="chartType=='barAllU'">
+        <div style="display: block">
+          <canvas baseChart
+                  [datasets]="chartData"
+                  [labels]="chartLabels"
+                  [options]="chartOptions"
+                  [legend]="chartLegend"
+                  chartType="bar"
+                  (chartHover)="chartHovered($event)"
+                  (chartClick)="chartClicked($event)"></canvas>
+        </div>
+        <!-- <button (click)="randomize()">Update</button> -->
+      </div>
+	</div>
   </div>
 </ng-sidebar-container>

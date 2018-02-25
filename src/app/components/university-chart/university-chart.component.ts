@@ -1,9 +1,9 @@
-import { Observable }                       from 'rxjs';
-import 'rxjs/add/operator/switchMap';
-
-import { Component, OnInit }                from '@angular/core';
+import { Component, ChangeDetectorRef }     from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Location }                         from '@angular/common';
+
+import { Observable }                       from 'rxjs';
+import 'rxjs/add/operator/switchMap';
 
 import { University }                       from '../../models/university';
 import { UniversityService }                from '../../services/university/university.service';
@@ -13,7 +13,7 @@ import { UniversityService }                from '../../services/university/univ
   templateUrl: './university-chart.component.html' /* ,
   styleUrls: [ './university-chart.component.css' ] */
 })
-export class UniversityChartComponent implements OnInit {
+export class UniversityChartComponent /* implements OnInit */ {
   // chartID: number = 0;
   showChart: boolean = false;
   public chartOptions: any;
@@ -21,7 +21,7 @@ export class UniversityChartComponent implements OnInit {
   public chartType: string;
   public chartLegend: boolean;
   public chartData: any[];
-  private _opened: boolean = false;
+  //private _opened: boolean = false;
 
   raceLabels: string[] = [
     'White',
@@ -35,16 +35,23 @@ export class UniversityChartComponent implements OnInit {
     'Unknown'
   ];
 
-  constructor(
+  constructor(private changeDetectorRef: ChangeDetectorRef,
     private universityService: UniversityService,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location
-  ) {}
-
-  private _toggleSidebar() {
-    this._opened = !this._opened;
+  ) {
+	  // Placing this call to loadDataAndDisplayIt() in one of the Angular lifecycle functions
+	  // (ngOnInit, etc.) instead of in the constructor does not seem to work.
+	  this.loadDataAndDisplayIt();
   }
+
+  // ngOnInit(): void {
+  // }
+
+  // private _toggleSidebar() {
+    // this._opened = !this._opened;
+  // }
 
   calculatePercentUnknownRace(university: University): number {
     let percentUnknown = 100.0
@@ -127,7 +134,8 @@ export class UniversityChartComponent implements OnInit {
         responsive: true
       },
       labels: universities.map(university => university.shortName),
-      type: 'bar',
+      //type: 'bar',
+      type: 'barAllU',
       legend: true,
       data: [
         {
@@ -138,14 +146,19 @@ export class UniversityChartComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {
+  clone(data: any): any {
+	  return JSON.parse(JSON.stringify(data));
+  }
+
+  loadDataAndDisplayIt(): void {
     this.universityService.getUniversities().subscribe(universities => {
       this.route.paramMap
-        .switchMap((params: ParamMap) => Observable.of(+params.get('id')))
-        .subscribe((chartID: number) => {
-          let chartSettings = this.createDefaultChartSettings(universities);
-
-		  //chartID = chartID || 2 * universities.length + 1;
+        // .switchMap((params: ParamMap) => Observable.of(+params.get('id')))
+        // .subscribe((chartID: number) => {
+        .subscribe((params: ParamMap) => {
+		  // let chartID: number = parseInt(params.get('id'));
+		  let chartID: number = +params.get('id');
+          let chartSettings; // = this.createDefaultChartSettings(universities);
 
           if (chartID > 0 && chartID <= universities.length) {
             chartSettings = this.createRaceBarChartSettings(universities[chartID - 1]);
@@ -157,21 +170,17 @@ export class UniversityChartComponent implements OnInit {
 
           this.showChart = false;
 
-          // this.chartData = [];
-
           let oldChartType = this.chartType;
 
           this.chartOptions = chartSettings.options;
           this.chartLabels = chartSettings.labels;
+          //this.chartLabels = this.clone(chartSettings.labels);
           this.chartType = chartSettings.type;
           this.chartLegend = chartSettings.legend;
-          // this.chartData = chartSettings.data;
 
           if (oldChartType == 'pie' && this.chartType == 'pie') {
-          // if (this.chartData && this.chartData.length > 0) {
             let clone = JSON.parse(JSON.stringify(this.chartData));
 
-            // clone[0].data = chartSettings.data;
             clone = chartSettings.data;
 
             this.chartData = clone;
@@ -180,6 +189,7 @@ export class UniversityChartComponent implements OnInit {
           }
 
           this.showChart = true;
+		  this.changeDetectorRef.detectChanges();			// !!! This is necessary.
     	});
     });
   }
