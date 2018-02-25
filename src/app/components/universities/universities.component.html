@@ -1,0 +1,19 @@
+<h2>Universities</h2>
+
+<!--
+<ul class="universities">
+  <li *ngFor="let university of universities" (click)="onSelect(university)"
+      [class.selected]="university === selectedUniversity">
+    <span class="badge">{{university.id}}</span>
+    <span>{{university.shortName}}</span>
+  </li>
+</ul>
+-->
+
+<ul class="universities">
+  <li *ngFor="let university of universities">
+    <a routerLink="/university/{{university.id}}">
+      <span class="badge">{{university.id}}</span> {{university.shortName}}
+    </a>
+  </li>
+</ul>
