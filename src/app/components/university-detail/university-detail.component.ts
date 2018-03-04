@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef }		from '@angular/core';
+import { Component, ChangeDetectorRef }		      from '@angular/core';
 import { ActivatedRoute, ParamMap }       			from '@angular/router';
 import { Location }                       			from '@angular/common';
 

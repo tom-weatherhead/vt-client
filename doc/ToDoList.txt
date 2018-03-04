@@ -1,11 +1,10 @@
 virginia-tech-20170810 : To Do List
 
-- Upgrade Angular from 1.x to 2.x
 - Upgrade all other npm packages to the latest versions, if possible
 - Lint the .js code
 - Run NSP (a Node.js security scan) via "grunt nsp"
 - Responsive Web design: Use Bootstrap class prefixes "col-sm-" and "col-md-" in additon to the currently-used "col-lg-" to format the view for different screen sizes
-- TODO: Angular: Use ng-repeat (or whatever it is called) to create tags for each sidebar group via iteration?
+- TODO: Angular: Use ng-repeat (or whatever it is called (*ngFor)) to create tags for each sidebar group via iteration?
 	<li><a href="#"><i class="fa fa-fw fa-folder"></i> X With Natl Avgs</a></li>
 	<li>
 		<ul>
@@ -108,7 +107,5 @@ virginia-tech-20170810 : To Do List
 		- https://github.com/jtblin/angular-chart.js
 
 - npm packages to add:
-	- font awesome
-	- bootstrap
-	- rxjs (for Observables)
-	- mongoose : Schemas for Angular models as MongoDB records
+
+- TODO: 2018-02-27 : Can we remove our dependency on the npm package ts-node ?

@@ -14,184 +14,183 @@ import { UniversityService }                from '../../services/university/univ
   styleUrls: [ './university-chart.component.css' ] */
 })
 export class UniversityChartComponent /* implements OnInit */ {
-  // chartID: number = 0;
-  showChart: boolean = false;
-  public chartOptions: any;
-  public chartLabels: string[];
-  public chartType: string;
-  public chartLegend: boolean;
-  public chartData: any[];
-  //private _opened: boolean = false;
+	showChart: boolean = false;
+	public chartOptions: any;
+	public chartLabels: string[];
+	public chartType: string;
+	public chartLegend: boolean;
+	public chartData: any[];
+	//private _opened: boolean = false;
 
-  raceLabels: string[] = [
-    'White',
-    'Black',
-    'Hispanic',
-    'Asian',
-    'Am Native',
-    'Pac Islander',
-    'Multiple',
-    'Alien',
-    'Unknown'
-  ];
+	raceLabels: string[] = [
+		'White',
+		'Black',
+		'Hispanic',
+		'Asian',
+		'Am Native',
+		'Pac Islander',
+		'Multiple',
+		'Alien',
+		'Unknown'
+	];
 
-  constructor(private changeDetectorRef: ChangeDetectorRef,
-    private universityService: UniversityService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location
-  ) {
-	  // Placing this call to loadDataAndDisplayIt() in one of the Angular lifecycle functions
-	  // (ngOnInit, etc.) instead of in the constructor does not seem to work.
-	  this.loadDataAndDisplayIt();
-  }
+	constructor(private changeDetectorRef: ChangeDetectorRef,
+		private universityService: UniversityService,
+		private route: ActivatedRoute,
+		private router: Router,
+		private location: Location
+	) {
+		// Placing this call to loadDataAndDisplayIt() in one of the Angular lifecycle functions
+		// (ngOnInit, etc.) instead of in the constructor does not seem to work.
+		this.loadDataAndDisplayIt();
+	}
 
-  // ngOnInit(): void {
-  // }
+	// ngOnInit(): void {
+	// }
 
-  // private _toggleSidebar() {
-    // this._opened = !this._opened;
-  // }
+	// private _toggleSidebar() {
+		// this._opened = !this._opened;
+	// }
 
-  calculatePercentUnknownRace(university: University): number {
-    let percentUnknown = 100.0
-      - university.percentWhite
-      - university.percentBlack
-      - university.percentHispanic
-      - university.percentAsian
-      - university.percentAmericanNative
-      - university.percentPacificIslander
-      - university.percentMultipleRaces
-      - university.percentNonResidentAlien;
+	calculatePercentUnknownRace(university: University): number {
+		let percentUnknown = 100.0
+			- university.percentWhite
+			- university.percentBlack
+			- university.percentHispanic
+			- university.percentAsian
+			- university.percentAmericanNative
+			- university.percentPacificIslander
+			- university.percentMultipleRaces
+			- university.percentNonResidentAlien;
 
-    if (percentUnknown < 0.0) {
-      percentUnknown = 0.0;
-    }
+		if (percentUnknown < 0.0) {
+			percentUnknown = 0.0;
+		}
 
-    // ThAW TODO 2017-11-17 : Is there a Math.floor() function in TypeScript / JavaScript ?
-    percentUnknown = (percentUnknown * 100.0 + 0.5) / 100.0;
-    return percentUnknown;
-  }
+		// ThAW TODO 2017-11-17 : Is there a Math.floor() function in TypeScript / JavaScript ?
+		percentUnknown = (percentUnknown * 100.0 + 0.5) / 100.0;
+		return percentUnknown;
+	}
 
-  createDefaultChartSettings(universities: University[]): any {
-    return {
-      labels: universities.map(university => university.shortName),
-      type: 'pie',
-      data: universities.map(university => university.funk)
-    };
-  }
+	createDefaultChartSettings(universities: University[]): any {
+		return {
+			labels: universities.map(university => university.shortName),
+			type: 'pie',
+			data: universities.map(university => university.funk)
+		};
+	}
 
-  createRaceBarChartSettings(university: University): any {
-    return {
-      options: {
-        scaleShowVerticalLines: false,
-        responsive: true
-      },
-      labels: this.raceLabels,
-      type: 'bar',
-      legend: true,
-      data: [
-        {
-          data: [
-            university.percentWhite,
-            university.percentBlack,
-            university.percentHispanic,
-            university.percentAsian,
-            university.percentAmericanNative,
-            university.percentPacificIslander,
-            university.percentMultipleRaces,
-            university.percentNonResidentAlien,
-            this.calculatePercentUnknownRace(university)
-          ],
-          label: 'Race!'
-        }
-      ]
-    };
-  }
+	createRaceBarChartSettings(university: University): any {
+		return {
+			options: {
+				scaleShowVerticalLines: false,
+				responsive: true
+			},
+			labels: this.raceLabels,
+			type: 'bar',
+			legend: true,
+			data: [
+				{
+					data: [
+						university.percentWhite,
+						university.percentBlack,
+						university.percentHispanic,
+						university.percentAsian,
+						university.percentAmericanNative,
+						university.percentPacificIslander,
+						university.percentMultipleRaces,
+						university.percentNonResidentAlien,
+						this.calculatePercentUnknownRace(university)
+					],
+					label: 'Race!'
+				}
+			]
+		};
+	}
 
-  createRacePieChartSettings(university: University): any {
-    return {
-      labels: this.raceLabels,
-      type: 'pie',
-      data: [
-        university.percentWhite,
-        university.percentBlack,
-        university.percentHispanic,
-        university.percentAsian,
-        university.percentAmericanNative,
-        university.percentPacificIslander,
-        university.percentMultipleRaces,
-        university.percentNonResidentAlien,
-        this.calculatePercentUnknownRace(university)
-      ]
-    };
-  }
+	createRacePieChartSettings(university: University): any {
+		return {
+			labels: this.raceLabels,
+			type: 'pie',
+			data: [
+				university.percentWhite,
+				university.percentBlack,
+				university.percentHispanic,
+				university.percentAsian,
+				university.percentAmericanNative,
+				university.percentPacificIslander,
+				university.percentMultipleRaces,
+				university.percentNonResidentAlien,
+				this.calculatePercentUnknownRace(university)
+			]
+		};
+	}
 
-  createUndergradPopulationsBarChartSettings(universities: University[]): any {
-    return {
-      options: {
-        scaleShowVerticalLines: false,
-        responsive: true
-      },
-      labels: universities.map(university => university.shortName),
-      //type: 'bar',
-      type: 'barAllU',
-      legend: true,
-      data: [
-        {
-          data: universities.map(university => university.numUndergraduateStudents),
-          label: 'Undergrads'
-        }
-      ]
-    };
-  }
+	createUndergradPopulationsBarChartSettings(universities: University[]): any {
+		return {
+			options: {
+				scaleShowVerticalLines: false,
+				responsive: true
+			},
+			labels: universities.map(university => university.shortName),
+			//type: 'bar',
+			type: 'barAllU',
+			legend: true,
+			data: [
+				{
+					data: universities.map(university => university.numUndergraduateStudents),
+					label: 'Undergrads'
+				}
+			]
+		};
+	}
 
-  clone(data: any): any {
-	  return JSON.parse(JSON.stringify(data));
-  }
+	clone(data: any): any {
+		return JSON.parse(JSON.stringify(data));
+	}
 
-  loadDataAndDisplayIt(): void {
-    this.universityService.getUniversities().subscribe(universities => {
-      this.route.paramMap
-        // .switchMap((params: ParamMap) => Observable.of(+params.get('id')))
-        // .subscribe((chartID: number) => {
-        .subscribe((params: ParamMap) => {
-		  // let chartID: number = parseInt(params.get('id'));
-		  let chartID: number = +params.get('id');
-          let chartSettings; // = this.createDefaultChartSettings(universities);
+	loadDataAndDisplayIt(): void {
+		this.universityService.getUniversities().subscribe(universities => {
+			this.route.paramMap
+				// .switchMap((params: ParamMap) => Observable.of(+params.get('id')))
+				// .subscribe((chartID: number) => {
+				.subscribe((params: ParamMap) => {
+					// let chartID: number = parseInt(params.get('id'));
+					let chartID: number = +params.get('id');
+					let chartSettings; // = this.createDefaultChartSettings(universities);
 
-          if (chartID > 0 && chartID <= universities.length) {
-            chartSettings = this.createRaceBarChartSettings(universities[chartID - 1]);
-          } else if (chartID > universities.length && chartID <= 2 * universities.length) {
-            chartSettings = this.createRacePieChartSettings(universities[chartID - universities.length - 1]);
-		  } else {
-            chartSettings = this.createUndergradPopulationsBarChartSettings(universities);
-          }
+					if (chartID > 0 && chartID <= universities.length) {
+						chartSettings = this.createRaceBarChartSettings(universities[chartID - 1]);
+					} else if (chartID > universities.length && chartID <= 2 * universities.length) {
+						chartSettings = this.createRacePieChartSettings(universities[chartID - universities.length - 1]);
+					} else {
+						chartSettings = this.createUndergradPopulationsBarChartSettings(universities);
+					}
 
-          this.showChart = false;
+					this.showChart = false;
 
-          let oldChartType = this.chartType;
+					let oldChartType = this.chartType;
 
-          this.chartOptions = chartSettings.options;
-          this.chartLabels = chartSettings.labels;
-          //this.chartLabels = this.clone(chartSettings.labels);
-          this.chartType = chartSettings.type;
-          this.chartLegend = chartSettings.legend;
+					this.chartOptions = chartSettings.options;
+					this.chartLabels = chartSettings.labels;
+					//this.chartLabels = this.clone(chartSettings.labels);
+					this.chartType = chartSettings.type;
+					this.chartLegend = chartSettings.legend;
 
-          if (oldChartType == 'pie' && this.chartType == 'pie') {
-            let clone = JSON.parse(JSON.stringify(this.chartData));
+					if (oldChartType == 'pie' && this.chartType == 'pie') {
+						let clone = JSON.parse(JSON.stringify(this.chartData));
 
-            clone = chartSettings.data;
+						clone = chartSettings.data;
 
-            this.chartData = clone;
-          } else {
-            this.chartData = chartSettings.data;
-          }
+						this.chartData = clone;
+					} else {
+						this.chartData = chartSettings.data;
+					}
 
-          this.showChart = true;
-		  this.changeDetectorRef.detectChanges();			// !!! This is necessary.
-    	});
-    });
+					this.showChart = true;
+					this.changeDetectorRef.detectChanges();			// !!! This is necessary.
+				});
+			});
   }
 
   goBack(): void {
