@@ -11,9 +11,10 @@
 -->
 
 <ul class="universities">
-  <li *ngFor="let university of universities">
-    <a routerLink="/university/{{university.id}}">
-      <span class="badge">{{university.id}}</span> {{university.shortName}}
-    </a>
-  </li>
+	<li *ngFor="let university of universities">
+		<a routerLink="/university/{{university.id}}">
+			<span class="badge">{{university.id}}</span> {{university.shortName}}
+		</a>
+		<button class="delete" title="delete university" (click)="delete(university)">x</button>
+	</li>
 </ul>

@@ -1,63 +1,173 @@
 import { Injectable }                       from '@angular/core';
+import { HttpClient, HttpHeaders }			from '@angular/common/http';
+
+//import { Observable }                       from 'rxjs';
+import { Observable }						from 'rxjs/Observable';
+import { of }								from 'rxjs/observable/of';
+import { catchError, map, tap }				from 'rxjs/operators';
+
+//import * as restClient						from 'observable-json-rest-api-client';
+
+import { MessageService }					from '../message/message.service';
 
 import { University }                       from '../../models/university';
 
-import { Observable }                       from 'rxjs';
-import { fromPromise }						from 'rxjs/observable/fromPromise';
+// TomW 2018-03-06 : Deleted angular-in-memory-web-api from package.json
+//    "angular-in-memory-web-api": "~0.5.0",
 
-import * as restClient						from 'observable-json-rest-api-client';
+/*
+https://angular.io/api/common/http/HttpClient
+
+import { HttpClient } from '@angular/common/http';
+
+class HttpClient {
+  constructor(handler: HttpHandler)
+  request(first: string | HttpRequest<any>, url?: string, options: {...}): Observable<any>
+  delete(url: string, options: {...}): Observable<any>
+  get(url: string, options: {...}): Observable<any>
+  head(url: string, options: {...}): Observable<any>
+  jsonp<T>(url: string, callbackParam: string): Observable<T>
+  options(url: string, options: {...}): Observable<any>
+  patch(url: string, body: any | null, options: {...}): Observable<any>
+  post(url: string, body: any | null, options: {...}): Observable<any>
+  put(url: string, body: any | null, options: {...}): Observable<any>
+}
+*/
+
+const httpOptions = {
+	headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
 
 @Injectable()
 export class UniversityService {
-	restApiBaseUrl = 'http://localhost:3000/u/';
+	//restApiBaseUrl = 'http://localhost:3000/u/';
+	private universitiesUrl = 'http://localhost:3000/u/';
 
-	constructor() { }
+	constructor(
+		private http: HttpClient,
+		private messageService: MessageService)
+	{
+	}
 
-	postUniversity(university: University): Observable<any> {
-		return restClient.post(this.restApiBaseUrl, university)
+	// postUniversity(university: University): Observable<any> {
+		// return restClient.post(this.restApiBaseUrl, university)
 			// .catch(error => {
 			// 	console.log('postUniversity(' + id.toString() + ') error:', error.message || error);
 			// 	return Observable.of(null);
 			// })
-			;
+			// ;
+	// }
+
+	/** GET universities from the vt-server */
+	getUniversities (): Observable<University[]> {
+		return this.http.get<University[]>(this.universitiesUrl)
+			.pipe(
+				tap(universities => this.log(`Fetched universities`)),
+				catchError(this.handleError('getUniversities', []))
+			);
 	}
 
-	getUniversities(): Observable<University[]> {
-		// console.log('UniversityService.getUniversities()');
-		return restClient.get(this.restApiBaseUrl);
+	/** GET university by id. Return `undefined` when id not found */
+	getUniversityNo404<Data>(id: number): Observable<University> {
+		const url = `${this.universitiesUrl}/?id=${id}`;
+		return this.http.get<University[]>(url)
+			.pipe(
+				map(universities => universities[0]), // returns a {0|1} element array
+				tap(h => {
+					const outcome = h ? `fetched` : `did not find`;
+					this.log(`${outcome} university id=${id}`);
+				}),
+				catchError(this.handleError<University>(`getUniversity id=${id}`))
+			);
 	}
 
+	/** GET university by id. Will 404 if id not found */
 	getUniversity(id: number): Observable<University> {
-		//console.log('UniversityService.getUniversity(' + id.toString() + ')');
-		return restClient.get(this.restApiBaseUrl + id.toString())
-			.catch(error => {
-				console.log('getUniversity(' + id.toString() + ') error:', error.message || error);
-				return Observable.of(null);
-			});
+		const url = `${this.universitiesUrl}/${id}`;
+		return this.http.get<University>(url).pipe(
+			tap(_ => this.log(`Fetched university id=${id}`)),
+			catchError(this.handleError<University>(`getUniversity id=${id}`))
+		);
 	}
 
-	putUniversity(id: number, university: University): Observable<any> {
-		return restClient.put(this.restApiBaseUrl + id.toString(), university)
-			.catch(error => {
-				console.log('putUniversity(' + id.toString() + ') error:', error.message || error);
-				return Observable.of(null);
-			});
+	/* GET universities whose name contains search term */
+	searchUniversities(term: string): Observable<University[]> {
+
+		if (!term.trim()) {
+			// if not search term, return empty university array.
+			return of([]);
+		}
+
+		const url = `${this.universitiesUrl}/?name=${term}`;
+
+		return this.http.get<University[]>(url).pipe(	// TODO: Change this URL, or write a handler for it in vt-server.
+			tap(_ => this.log(`found universities matching "${term}"`)),
+			catchError(this.handleError<University[]>('searchUniversities', []))
+		);
 	}
 
-	deleteUniversity(id: number): Observable<any> {
-		return restClient.delete(this.restApiBaseUrl + id.toString())
-			.catch(error => {
-				console.log('deleteUniversity(' + id.toString() + ') error:', error.message || error);
-				return Observable.of(null);
-			});
+	//////// Save methods //////////
+
+	/** POST: add a new university to the server */
+	addUniversity (university: University): Observable<University> {
+		return this.http.post<University>(this.universitiesUrl, university, httpOptions).pipe(
+			tap((university: University) => this.log(`added university with id=${university.id}`)),
+			catchError(this.handleError<University>('addUniversity'))
+		);
 	}
 
-	/*
-	private handleError(error: any): Promise<any> {
-		console.error('An error occurred', error); // for demo purposes only
-		return Promise.reject(error.message || error);
+	/** DELETE: delete the university from the server */
+	deleteUniversity (university: University | number): Observable<University> {
+		const id = typeof university === 'number' ? university : university.id;
+		const url = `${this.universitiesUrl}/${id}`;
+
+		return this.http.delete<University>(url, httpOptions).pipe(
+			tap(_ => this.log(`Deleted university id=${id}`)),
+			catchError(this.handleError<University>('deleteUniversity'))
+		);
 	}
-	*/
+
+	/** PUT: update the university on the server */
+	updateUniversity (university: University): Observable<any> {
+		return this.http.put(this.universitiesUrl, university, httpOptions).pipe(
+			tap(_ => this.log(`updated university id=${university.id}`)),
+			catchError(this.handleError<any>('updateUniversity'))
+		);
+	}
+
+	// putUniversity(id: number, changes: any): Observable<any> {
+		// return restClient.put(this.restApiBaseUrl + id.toString(), changes)
+	// putUniversity(id: number, university: University): Observable<any> {
+		// return restClient.put(this.restApiBaseUrl + id.toString(), university)
+			// .catch(error => {
+				// console.log('putUniversity(' + id.toString() + ') error:', error.message || error);
+				// return Observable.of(null);
+			// });
+	// }
+
+	/**
+	 * Handle Http operation that failed.
+	 * Let the app continue.
+	 * @param operation - name of the operation that failed
+	 * @param result - optional value to return as the observable result
+	 */
+	private handleError<T> (operation = 'operation', result?: T) {
+		return (error: any): Observable<T> => {
+			// TODO: send the error to remote logging infrastructure
+			console.error(error); // log to console instead
+
+			// TODO: better job of transforming error for user consumption
+			this.log(`${operation} failed: ${error.message}`);
+
+			// Let the app keep running by returning an empty result.
+			return of(result as T);
+		};
+	}
+
+	/** Log a UniversityService message with the MessageService */
+	private log(message: string) {
+		this.messageService.add('UniversityService: ' + message);
+	}
 }
 
 /*

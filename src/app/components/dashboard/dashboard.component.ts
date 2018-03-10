@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectorRef }		from '@angular/core';
 
 import { Observable }                       		from 'rxjs';
 
-import { Hero }               						from '../../models/hero';
-import { HeroService }        						from '../../services/hero/hero.service';
+// import { Hero }               						from '../../models/hero';
+// import { HeroService }        						from '../../services/hero/hero.service';
 
 import { University }         						from '../../models/university';
 import { UniversityService }  						from '../../services/university/university.service';
@@ -14,17 +14,17 @@ import { UniversityService }  						from '../../services/university/university.s
   styleUrls: [ './dashboard.component.css' ]
 })
 export class DashboardComponent implements OnInit {
-  heroes: Hero[] = [];
+  //heroes: Hero[] = [];
   universities: University[] = [];
   
   constructor(private changeDetectorRef: ChangeDetectorRef,
-    private heroService: HeroService,
+    //private heroService: HeroService,
     private universityService: UniversityService) { }
 
   ngOnInit(): void {
-    this.heroService
-      .getHeroes()
-      .subscribe(heroes => this.heroes = heroes.slice(1, 5));
+    // this.heroService
+      // .getHeroes()
+      // .subscribe(heroes => this.heroes = heroes.slice(1, 5));
 
 	this.universityService.getUniversities()
 		.subscribe(universities => {
