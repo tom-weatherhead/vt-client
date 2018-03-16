@@ -1,3 +1,7 @@
+// TODO: 2018-03-15 : Load configuration from external file
+// https://github.com/angular/angular-cli/issues/6711
+// https://gist.github.com/fernandohu/122e88c3bcd210bbe41c608c36306db9
+
 import { Injectable }                       from '@angular/core';
 import { HttpClient, HttpHeaders }			from '@angular/common/http';
 
@@ -41,7 +45,8 @@ const httpOptions = {
 @Injectable()
 export class UniversityService {
 	//restApiBaseUrl = 'http://localhost:3000/u/';
-	private universitiesUrl = 'http://localhost:3000/u/';
+	// private universitiesUrl = 'http://localhost:3000/u/';
+	private universitiesUrl = 'http://serenity:3000/u/';
 
 	constructor(
 		private http: HttpClient,

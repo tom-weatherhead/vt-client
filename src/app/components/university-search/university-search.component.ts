@@ -52,7 +52,7 @@ export class UniversitySearchComponent implements OnInit {
 			});
 	}
 
-	gotoDetail(university: University): void {
+	gotoUniversityDetail(university: University): void {
 		let link = ['/university', university.id];
 		this.router.navigate(link);
 	}
