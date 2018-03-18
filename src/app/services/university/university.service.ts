@@ -1,7 +1,3 @@
-// TODO: 2018-03-15 : Load configuration from external file
-// https://github.com/angular/angular-cli/issues/6711
-// https://gist.github.com/fernandohu/122e88c3bcd210bbe41c608c36306db9
-
 import { Injectable }                       from '@angular/core';
 import { HttpClient, HttpHeaders }			from '@angular/common/http';
 
@@ -16,7 +12,7 @@ import { MessageService }					from '../message/message.service';
 
 import { University }                       from '../../models/university';
 
-import { Config, ConfigService }			from '../../services/config/config.service';
+import { /* Config, */ ConfigService }			from '../../services/config/config.service';
 
 // TomW 2018-03-06 : Deleted angular-in-memory-web-api from package.json
 //    "angular-in-memory-web-api": "~0.5.0",
@@ -46,26 +42,13 @@ const httpOptions = {
 
 @Injectable()
 export class UniversityService {
-	//restApiBaseUrl = 'http://localhost:3000/u/';
-	// private universitiesUrl = 'http://localhost:3000/u/';
-	private universitiesUrl; // = 'http://serenity:3000/u/';
+	private universitiesUrl;
 
 	constructor(
 		private configService: ConfigService,
 		private http: HttpClient,
 		private messageService: MessageService)
 	{
-		// this.configService.getConfig()
-		// 	// clone the data object, using its known Config shape
-		// 	.subscribe(data => {
-		// 		const config = { ...data };
-
-		// 		console.log('Config from service:', config);
-
-		// 		this.universitiesUrl = config.serviceURLs.university;
-
-		// 		console.log('constructor: universitiesUrl:', this.universitiesUrl);
-		// 	});
 	}
 
 	getUrl() : Observable<string> {
@@ -83,29 +66,21 @@ export class UniversityService {
 
 				this.universitiesUrl = config.serviceURLs.university;
 
-				console.log('constructor: universitiesUrl:', this.universitiesUrl);
+				console.log('universitiesUrl:', this.universitiesUrl);
 
 				return Observable.of(this.universitiesUrl);
 			});
 	}
-
-	// postUniversity(university: University): Observable<any> {
-		// return restClient.post(this.restApiBaseUrl, university)
-			// .catch(error => {
-			// 	console.log('postUniversity(' + id.toString() + ') error:', error.message || error);
-			// 	return Observable.of(null);
-			// })
-			// ;
-	// }
 
 	/** GET universities from the vt-server */
 	getUniversities (): Observable<University[]> {
 		//console.log('getUniversities() : universitiesUrl:', this.universitiesUrl);
 		// return this.http.get<University[]>(this.universitiesUrl)
 		return this.getUrl()
-			.switchMap(universitiesUrl => {
-				return this.http.get<University[]>(universitiesUrl)
-			})
+			// .switchMap(universitiesUrl => {
+			// 	return this.http.get<University[]>(universitiesUrl);
+			// })
+			.switchMap(universitiesUrl => this.http.get<University[]>(universitiesUrl))
 			.pipe(
 				tap(universities => this.log(`Fetched universities`)),
 				catchError(this.handleError('getUniversities', []))
@@ -114,12 +89,19 @@ export class UniversityService {
 
 	/** GET university by id. Return `undefined` when id not found */
 	getUniversityNo404<Data>(id: number): Observable<University> {
-		const url = `${this.universitiesUrl}/?id=${id}`;
-		return this.http.get<University[]>(url)
+		// const url = `${this.universitiesUrl}/?id=${id}`;
+		// return this.http.get<University[]>(url)
+		return this.getUrl()
+			// .switchMap(universitiesUrl => {
+			// 	const url: string = `${universitiesUrl}/${id}`;
+
+			// 	return this.http.get<University>(url);
+			// })
+			.switchMap(universitiesUrl => this.http.get<University>(`${universitiesUrl}/${id}`))
 			.pipe(
 				map(universities => universities[0]), // returns a {0|1} element array
 				tap(h => {
-					const outcome = h ? `fetched` : `did not find`;
+					const outcome = h ? `Fetched` : `Did not find`;
 					this.log(`${outcome} university id=${id}`);
 				}),
 				catchError(this.handleError<University>(`getUniversity id=${id}`))
@@ -131,11 +113,12 @@ export class UniversityService {
 		// const url = `${this.universitiesUrl}/${id}`;
 		// return this.http.get<University>(url)
 		return this.getUrl()
-			.switchMap(universitiesUrl => {
-				const url: string = `${universitiesUrl}/${id}`;
+			// .switchMap(universitiesUrl => {
+			// 	const url: string = `${universitiesUrl}/${id}`;
 
-				return this.http.get<University>(url);
-			})
+			// 	return this.http.get<University>(url);
+			// })
+			.switchMap(universitiesUrl => this.http.get<University>(`${universitiesUrl}/${id}`))
 			.pipe(
 				tap(_ => this.log(`Fetched university id=${id}`)),
 				catchError(this.handleError<University>(`getUniversity id=${id}`))
@@ -150,41 +133,52 @@ export class UniversityService {
 			return of([]);
 		}
 
-		const url = `${this.universitiesUrl}/?name=${term}`;
+		// const url = `${this.universitiesUrl}/?name=${term}`;
 
-		return this.http.get<University[]>(url).pipe(	// TODO: Change this URL, or write a handler for it in vt-server.
-			tap(_ => this.log(`found universities matching "${term}"`)),
-			catchError(this.handleError<University[]>('searchUniversities', []))
-		);
+		// return this.http.get<University[]>(url)
+		return this.getUrl()
+			// .switchMap(universitiesUrl => {
+			// 	const url: string = `${universitiesUrl}/?name=${term}`;
+
+			// 	return this.http.get<University[]>(url);
+			// })
+			.switchMap(universitiesUrl => this.http.get<University[]>(`${universitiesUrl}/?name=${term}`))
+			.pipe(	// TODO: Change this URL, or write a handler for it in vt-server.
+				tap(_ => this.log(`Found universities matching "${term}"`)),
+				catchError(this.handleError<University[]>('searchUniversities', []))
+			);
 	}
 
 	//////// Save methods //////////
 
 	/** POST: add a new university to the server */
 	addUniversity (university: University): Observable<University> {
-		return this.http.post<University>(this.universitiesUrl, university, httpOptions).pipe(
-			tap((university: University) => this.log(`added university with id=${university.id}`)),
-			catchError(this.handleError<University>('addUniversity'))
-		);
-	}
-
-	/** DELETE: delete the university from the server */
-	deleteUniversity (university: University | number): Observable<University> {
-		const id = typeof university === 'number' ? university : university.id;
-		const url = `${this.universitiesUrl}/${id}`;
-
-		return this.http.delete<University>(url, httpOptions).pipe(
-			tap(_ => this.log(`Deleted university id=${id}`)),
-			catchError(this.handleError<University>('deleteUniversity'))
-		);
+		// return this.http.post<University>(this.universitiesUrl, university, httpOptions)
+		return this.getUrl()
+			// .switchMap(universitiesUrl => {
+			// 	return this.http.post<University>(universitiesUrl, university, httpOptions);
+			// })
+			.switchMap(universitiesUrl => this.http.post<University>(universitiesUrl, university, httpOptions))
+			.pipe(
+				tap((university: University) => this.log(`Added university with id=${university.id}`)),
+				catchError(this.handleError<University>('addUniversity'))
+			);
 	}
 
 	/** PUT: update the university on the server */
 	updateUniversity (university: University): Observable<any> {
-		return this.http.put(this.universitiesUrl, university, httpOptions).pipe(
-			tap(_ => this.log(`updated university id=${university.id}`)),
-			catchError(this.handleError<any>('updateUniversity'))
-		);
+		// return this.http.put(this.universitiesUrl, university, httpOptions)
+		return this.getUrl()
+			// .switchMap(universitiesUrl => {
+			// 	const url = `${universitiesUrl}/${university.id}`;
+
+			// 	return this.http.put<University>(universitiesUrl, university, httpOptions);
+			// })
+			.switchMap(universitiesUrl => this.http.put<University>(`${universitiesUrl}/${university.id}`, university, httpOptions))
+			.pipe(
+				tap(_ => this.log(`updated university id=${university.id}`)),
+				catchError(this.handleError<any>('updateUniversity'))
+			);
 	}
 
 	// putUniversity(id: number, changes: any): Observable<any> {
@@ -196,6 +190,34 @@ export class UniversityService {
 				// return Observable.of(null);
 			// });
 	// }
+
+	patchUniversity(id: number, changes: any): Observable<any> {
+		return this.getUrl()
+			.switchMap(universitiesUrl => this.http.put<University>(`${universitiesUrl}/${id}`, changes, httpOptions))
+			.pipe(
+				tap(_ => this.log(`updated university id=${id}`)),
+				catchError(this.handleError<any>('patchUniversity'))
+			);
+	}
+
+	/** DELETE: delete the university from the server */
+	deleteUniversity (university: University | number): Observable<University> {
+		const id = typeof university === 'number' ? university : university.id;
+		// const url = `${this.universitiesUrl}/${id}`;
+
+		// return this.http.delete<University>(url, httpOptions)
+		return this.getUrl()
+			// .switchMap(universitiesUrl => {
+			// 	const url = `${universitiesUrl}/${id}`;
+
+			// 	return this.http.delete<University>(url, httpOptions);
+			// })
+			.switchMap(universitiesUrl => this.http.delete<University>(`${universitiesUrl}/${id}`, httpOptions))
+			.pipe(
+				tap(_ => this.log(`Deleted university id=${id}`)),
+				catchError(this.handleError<University>('deleteUniversity'))
+			);
+	}
 
 	/**
 	 * Handle Http operation that failed.
