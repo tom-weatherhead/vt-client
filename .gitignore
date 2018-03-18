@@ -60,3 +60,4 @@ typings/
 src/app/**/*.js*
 src/main.js*
 
+src/assets/config.json

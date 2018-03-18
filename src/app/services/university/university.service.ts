@@ -16,6 +16,8 @@ import { MessageService }					from '../message/message.service';
 
 import { University }                       from '../../models/university';
 
+import { Config, ConfigService }			from '../../services/config/config.service';
+
 // TomW 2018-03-06 : Deleted angular-in-memory-web-api from package.json
 //    "angular-in-memory-web-api": "~0.5.0",
 
@@ -46,12 +48,45 @@ const httpOptions = {
 export class UniversityService {
 	//restApiBaseUrl = 'http://localhost:3000/u/';
 	// private universitiesUrl = 'http://localhost:3000/u/';
-	private universitiesUrl = 'http://serenity:3000/u/';
+	private universitiesUrl; // = 'http://serenity:3000/u/';
 
 	constructor(
+		private configService: ConfigService,
 		private http: HttpClient,
 		private messageService: MessageService)
 	{
+		// this.configService.getConfig()
+		// 	// clone the data object, using its known Config shape
+		// 	.subscribe(data => {
+		// 		const config = { ...data };
+
+		// 		console.log('Config from service:', config);
+
+		// 		this.universitiesUrl = config.serviceURLs.university;
+
+		// 		console.log('constructor: universitiesUrl:', this.universitiesUrl);
+		// 	});
+	}
+
+	getUrl() : Observable<string> {
+
+		if (this.universitiesUrl) {
+			return Observable.of(this.universitiesUrl);
+		}
+
+		return this.configService.getConfig()
+			// clone the data object, using its known Config shape
+			.switchMap(data => {
+				const config = { ...data };
+
+				console.log('Config from service:', config);
+
+				this.universitiesUrl = config.serviceURLs.university;
+
+				console.log('constructor: universitiesUrl:', this.universitiesUrl);
+
+				return Observable.of(this.universitiesUrl);
+			});
 	}
 
 	// postUniversity(university: University): Observable<any> {
@@ -65,7 +100,12 @@ export class UniversityService {
 
 	/** GET universities from the vt-server */
 	getUniversities (): Observable<University[]> {
-		return this.http.get<University[]>(this.universitiesUrl)
+		//console.log('getUniversities() : universitiesUrl:', this.universitiesUrl);
+		// return this.http.get<University[]>(this.universitiesUrl)
+		return this.getUrl()
+			.switchMap(universitiesUrl => {
+				return this.http.get<University[]>(universitiesUrl)
+			})
 			.pipe(
 				tap(universities => this.log(`Fetched universities`)),
 				catchError(this.handleError('getUniversities', []))
@@ -88,11 +128,18 @@ export class UniversityService {
 
 	/** GET university by id. Will 404 if id not found */
 	getUniversity(id: number): Observable<University> {
-		const url = `${this.universitiesUrl}/${id}`;
-		return this.http.get<University>(url).pipe(
-			tap(_ => this.log(`Fetched university id=${id}`)),
-			catchError(this.handleError<University>(`getUniversity id=${id}`))
-		);
+		// const url = `${this.universitiesUrl}/${id}`;
+		// return this.http.get<University>(url)
+		return this.getUrl()
+			.switchMap(universitiesUrl => {
+				const url: string = `${universitiesUrl}/${id}`;
+
+				return this.http.get<University>(url);
+			})
+			.pipe(
+				tap(_ => this.log(`Fetched university id=${id}`)),
+				catchError(this.handleError<University>(`getUniversity id=${id}`))
+			);
 	}
 
 	/* GET universities whose name contains search term */

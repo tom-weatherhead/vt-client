@@ -3,6 +3,9 @@ import { BrowserModule }                  from '@angular/platform-browser';
 import { FormsModule }                    from '@angular/forms';
 import { HttpClientModule }               from '@angular/common/http';
 
+// import { APP_INITIALIZER }                from '@angular/core';
+// import { AppConfig }                      from '../providers/app.config/app.config';
+
 //import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 //import { InMemoryDataService }            from '../services/in-memory-data/in-memory-data.service';
 
@@ -31,6 +34,9 @@ import { ChartsModule }                   from 'ng2-charts';
 
 import { SidebarModule }                  from 'ng-sidebar';
 
+import { ConfigService }                  from '../services/config/config.service';
+import { ConfigComponent }                from '../components/config/config.component';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -39,8 +45,6 @@ import { SidebarModule }                  from 'ng-sidebar';
     HttpClientModule,
     ChartsModule,
     SidebarModule.forRoot()
-	
-	//,
 
     // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
     // and returns simulated server responses.
@@ -62,11 +66,15 @@ import { SidebarModule }                  from 'ng-sidebar';
     UniversitySearchComponent,
     SidebarTestComponent
     // , ObservableDemoComponent
+    , ConfigComponent
   ],
   providers: [
     // HeroService,
     UniversityService,
-    MessageService
+    MessageService,
+    // AppConfig,
+    // { provide: APP_INITIALIZER, useFactory: (config: AppConfig) => () => config.load(), deps: [AppConfig], multi: true }
+    ConfigService
   ],
   bootstrap: [ AppComponent ]
 })
