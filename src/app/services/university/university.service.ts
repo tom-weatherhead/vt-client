@@ -6,13 +6,11 @@ import { Observable }						from 'rxjs/Observable';
 import { of }								from 'rxjs/observable/of';
 import { catchError, map, tap }				from 'rxjs/operators';
 
-//import * as restClient						from 'observable-json-rest-api-client';
-
 import { MessageService }					from '../message/message.service';
 
 import { University }                       from '../../models/university';
 
-import { /* Config, */ ConfigService }			from '../../services/config/config.service';
+import { /* Config, */ ConfigService }		from '../../services/config/config.service';
 
 // TomW 2018-03-06 : Deleted angular-in-memory-web-api from package.json
 //    "angular-in-memory-web-api": "~0.5.0",
@@ -58,7 +56,7 @@ export class UniversityService {
 		}
 
 		return this.configService.getConfig()
-			// clone the data object, using its known Config shape
+			// Clone the data object, using its known Config shape
 			.switchMap(data => {
 				const config = { ...data };
 
@@ -74,12 +72,7 @@ export class UniversityService {
 
 	/** GET universities from the vt-server */
 	getUniversities (): Observable<University[]> {
-		//console.log('getUniversities() : universitiesUrl:', this.universitiesUrl);
-		// return this.http.get<University[]>(this.universitiesUrl)
 		return this.getUrl()
-			// .switchMap(universitiesUrl => {
-			// 	return this.http.get<University[]>(universitiesUrl);
-			// })
 			.switchMap(universitiesUrl => this.http.get<University[]>(universitiesUrl))
 			.pipe(
 				tap(universities => this.log(`Fetched universities`)),
@@ -89,14 +82,7 @@ export class UniversityService {
 
 	/** GET university by id. Return `undefined` when id not found */
 	getUniversityNo404<Data>(id: number): Observable<University> {
-		// const url = `${this.universitiesUrl}/?id=${id}`;
-		// return this.http.get<University[]>(url)
 		return this.getUrl()
-			// .switchMap(universitiesUrl => {
-			// 	const url: string = `${universitiesUrl}/${id}`;
-
-			// 	return this.http.get<University>(url);
-			// })
 			.switchMap(universitiesUrl => this.http.get<University>(`${universitiesUrl}/${id}`))
 			.pipe(
 				map(universities => universities[0]), // returns a {0|1} element array
@@ -110,14 +96,7 @@ export class UniversityService {
 
 	/** GET university by id. Will 404 if id not found */
 	getUniversity(id: number): Observable<University> {
-		// const url = `${this.universitiesUrl}/${id}`;
-		// return this.http.get<University>(url)
 		return this.getUrl()
-			// .switchMap(universitiesUrl => {
-			// 	const url: string = `${universitiesUrl}/${id}`;
-
-			// 	return this.http.get<University>(url);
-			// })
 			.switchMap(universitiesUrl => this.http.get<University>(`${universitiesUrl}/${id}`))
 			.pipe(
 				tap(_ => this.log(`Fetched university id=${id}`)),
@@ -129,21 +108,13 @@ export class UniversityService {
 	searchUniversities(term: string): Observable<University[]> {
 
 		if (!term.trim()) {
-			// if not search term, return empty university array.
+			// If there is no search term, return an empty University array.
 			return of([]);
 		}
 
-		// const url = `${this.universitiesUrl}/?name=${term}`;
-
-		// return this.http.get<University[]>(url)
 		return this.getUrl()
-			// .switchMap(universitiesUrl => {
-			// 	const url: string = `${universitiesUrl}/?name=${term}`;
-
-			// 	return this.http.get<University[]>(url);
-			// })
 			.switchMap(universitiesUrl => this.http.get<University[]>(`${universitiesUrl}/?name=${term}`))
-			.pipe(	// TODO: Change this URL, or write a handler for it in vt-server.
+			.pipe(
 				tap(_ => this.log(`Found universities matching "${term}"`)),
 				catchError(this.handleError<University[]>('searchUniversities', []))
 			);
@@ -153,11 +124,7 @@ export class UniversityService {
 
 	/** POST: add a new university to the server */
 	addUniversity (university: University): Observable<University> {
-		// return this.http.post<University>(this.universitiesUrl, university, httpOptions)
 		return this.getUrl()
-			// .switchMap(universitiesUrl => {
-			// 	return this.http.post<University>(universitiesUrl, university, httpOptions);
-			// })
 			.switchMap(universitiesUrl => this.http.post<University>(universitiesUrl, university, httpOptions))
 			.pipe(
 				tap((university: University) => this.log(`Added university with id=${university.id}`)),
@@ -167,13 +134,7 @@ export class UniversityService {
 
 	/** PUT: update the university on the server */
 	updateUniversity (university: University): Observable<any> {
-		// return this.http.put(this.universitiesUrl, university, httpOptions)
 		return this.getUrl()
-			// .switchMap(universitiesUrl => {
-			// 	const url = `${universitiesUrl}/${university.id}`;
-
-			// 	return this.http.put<University>(universitiesUrl, university, httpOptions);
-			// })
 			.switchMap(universitiesUrl => this.http.put<University>(`${universitiesUrl}/${university.id}`, university, httpOptions))
 			.pipe(
 				tap(_ => this.log(`updated university id=${university.id}`)),
@@ -181,16 +142,7 @@ export class UniversityService {
 			);
 	}
 
-	// putUniversity(id: number, changes: any): Observable<any> {
-		// return restClient.put(this.restApiBaseUrl + id.toString(), changes)
-	// putUniversity(id: number, university: University): Observable<any> {
-		// return restClient.put(this.restApiBaseUrl + id.toString(), university)
-			// .catch(error => {
-				// console.log('putUniversity(' + id.toString() + ') error:', error.message || error);
-				// return Observable.of(null);
-			// });
-	// }
-
+	/** PATCH: update the university on the server */
 	patchUniversity(id: number, changes: any): Observable<any> {
 		return this.getUrl()
 			.switchMap(universitiesUrl => this.http.put<University>(`${universitiesUrl}/${id}`, changes, httpOptions))
@@ -203,15 +155,7 @@ export class UniversityService {
 	/** DELETE: delete the university from the server */
 	deleteUniversity (university: University | number): Observable<University> {
 		const id = typeof university === 'number' ? university : university.id;
-		// const url = `${this.universitiesUrl}/${id}`;
-
-		// return this.http.delete<University>(url, httpOptions)
 		return this.getUrl()
-			// .switchMap(universitiesUrl => {
-			// 	const url = `${universitiesUrl}/${id}`;
-
-			// 	return this.http.delete<University>(url, httpOptions);
-			// })
 			.switchMap(universitiesUrl => this.http.delete<University>(`${universitiesUrl}/${id}`, httpOptions))
 			.pipe(
 				tap(_ => this.log(`Deleted university id=${id}`)),
@@ -227,10 +171,10 @@ export class UniversityService {
 	 */
 	private handleError<T> (operation = 'operation', result?: T) {
 		return (error: any): Observable<T> => {
-			// TODO: send the error to remote logging infrastructure
+			// TODO: Send the error to remote logging infrastructure
 			console.error(error); // log to console instead
 
-			// TODO: better job of transforming error for user consumption
+			// TODO: A better job of transforming error for user consumption
 			this.log(`${operation} failed: ${error.message}`);
 
 			// Let the app keep running by returning an empty result.
@@ -327,25 +271,4 @@ private universities: University[] = [
 		funk: 8
 	}
 ];
-*/
-
-// private toastUniversity: University = { id: 0, name: 'Toast', funk: 4 };
-
-/*
-private toastUniversity: University = {
-id: 0,
-name: 'Toast',
-shortName: 'Toast',
-numUndergraduateStudents: 22925,
-percentWhite: 74.67,
-percentBlack: 6.5,
-percentHispanic: 4.47,
-percentAsian: 5.37,
-percentAmericanNative: 0.42,
-percentPacificIslander: 0.06,
-percentMultipleRaces: 3.51,
-percentNonResidentAlien: 3.27,
-percentUnknown: 1.72,
-funk: 4
-};
 */
