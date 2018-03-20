@@ -74,6 +74,7 @@ export class UniversityService {
 	getUniversities (): Observable<University[]> {
 		return this.getUrl()
 			.switchMap(universitiesUrl => this.http.get<University[]>(universitiesUrl))
+			.switchMap(universities => Observable.of(universities.sort((a, b) => a.id - b.id)))
 			.pipe(
 				tap(universities => this.log(`Fetched universities`)),
 				catchError(this.handleError('getUniversities', []))
@@ -123,9 +124,26 @@ export class UniversityService {
 	//////// Save methods //////////
 
 	/** POST: add a new university to the server */
-	addUniversity (university: University): Observable<University> {
+	//addUniversity (university: University): Observable<University> {
+	addUniversity(id: number, fullName: string, shortName: string): Observable<University> {
+		const universityBeforePost = {
+			id: id,
+			name: fullName,
+			shortName: shortName,
+			numUndergraduateStudents: 24191,
+			percentWhite: 69.67,
+			percentBlack: 3.6,
+			percentHispanic: 5.3,
+			percentAsian: 9.19,
+			percentAmericanNative: 0.15,
+			percentPacificIslander: 0.13,
+			percentMultipleRaces: 4.29,
+			percentNonResidentAlien: 4.51,
+			percentUnknown: 3.15
+		};
+
 		return this.getUrl()
-			.switchMap(universitiesUrl => this.http.post<University>(universitiesUrl, university, httpOptions))
+			.switchMap(universitiesUrl => this.http.post<University>(universitiesUrl, universityBeforePost, httpOptions))
 			.pipe(
 				tap((university: University) => this.log(`Added university with id=${university.id}`)),
 				catchError(this.handleError<University>('addUniversity'))
