@@ -1,20 +1,16 @@
 export class University {
 	id: number;
 	name: string;
-    shortName: string;
-    numUndergraduateStudents: number;
-    percentWhite: number;
-    percentBlack: number;
-    percentHispanic: number;
-    percentAsian: number;
-    percentAmericanNative: number;
-    percentPacificIslander: number;
-    percentMultipleRaces: number;
-    percentNonResidentAlien: number;
-    percentUnknown: number;
+	shortName: string;
+	numUndergraduateStudents: number;
+	percentWhite: number;
+	percentBlack: number;
+	percentHispanic: number;
+	percentAsian: number;
+	percentAmericanNative: number;
+	percentPacificIslander: number;
+	percentMultipleRaces: number;
+	percentNonResidentAlien: number;
+	percentUnknown: number;
 	funk: number;
-
-	// "Institution Id": string;
-	// "Institution": string;
-	// "City":"Charlottesville","State":"VA","Institute URL":"www.virginia.edu/","Predominant degree awarded":"Predominantly bachelor's-degree granting","Type of Institution":"Public","Locale":"Small Suburb","25th percentile of SAT scores at the institution (critical reading)":"620","75th percentile of SAT scores at the institution (critical reading)":"720","25th percentile of SAT scores at the institution (math)":"630","75th percentile of SAT scores at the institution (math)":"740","25th percentile of SAT scores at the institution (writing)":"620","75th percentile of SAT scores at the institution (writing)":"720","Midpoint of SAT scores at the institution (critical reading)":"670","Midpoint of SAT scores at the institution (math)":"685","Midpoint of SAT scores at the institution (writing)":"670","25th percentile of the ACT cumulative score":"28","75th percentile of the ACT cumulative score":"33","Percentage of degrees awarded in Agriculture, Agriculture Operations, And Related Sciences":"0","Percentage of degrees awarded in Natural Resources And Conservation":"0.0234","Percentage of degrees awarded in Architecture And Related Services":"0.0258","Percentage of degrees awarded in Communication, Journalism, And Related Programs":"0","Percentage of degrees awarded in Computer And Information Sciences And Support Services":"0.0196","Percentage of degrees awarded in Engineering":"0.1347","Percentage of degrees awarded in Foreign Languages, Literatures, And Linguistics":"0.0333","Percentage of degrees awarded in Family And Consumer Sciences/Human Sciences":"0","Percentage of degrees awarded in Psychology":"0.0597","Percentage of degrees awarded in Public Administration And Social Service Professions":"0.0116","Percentage of degrees awarded in Social Sciences":"0.1796","Percentage of degrees awarded in Visual And Performing Arts":"0.0266","Percentage of degrees awarded in Business, Management, Marketing, And Related Support Services":"0.0976","Undergraduate Students":"15515","% White":"0.6117","% Black":"0.0619","% Hispanic":"0.0609","% Asian":"0.1227","% American Indian/Alaska Native":"0.001","% Native Hawaiian/Pacific Islander":"0.0003","% Two or More races":"0.0455","% Non Resident Alien":"0.05","% Unknown":"0.046","% share of part-time students":"0.0371","Percent Full Time Students":"0.9629","Average Annual Cost":"17863","Average Annual Cost ($) by family income group - $0 to $30000":"9615","Average Annual Cost ($) by family income group - $30001 to $48000":"10314","Average Annual Cost ($) by family income group - $48001to $75000":"16199","Average Annual Cost ($) by family income group - $75001 to $110000":"21964","Average Annual Cost ($) by family income group - 110001+":"24525","Socio-Economic Diversity (% of Student Receiving Pell Grant)":"0.1256","First-time, full-time student retention rate at four-year institutions (%)":"0.973","First-time, part-time student retention rate at four-year institutions (%)":"1","% Student Receiving Federal Loans":"0.2506","Salary After Attending ($)":"60100","% Earning above High School Grad":"0.777","Typical Total Debt ($)":"19633","Typical Monthly Loan Payment ($/month)":"201.49172","Students Paying Down Their Debt (%)":"0.851286174","Completion rate for first-time and full-time students at four-year institutions":"0.936154194","National Average Annual Cost":"16127","National Average Students Paying Down Their Debt (%)":"0.46","National Average - Salary After Attending":"33500","National Average - Graduation rate (%)":"0.42","National Average - First-time, full-time student retention rate at four-year institutions (%)":"0.68"
 }

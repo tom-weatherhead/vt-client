@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-//import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+// import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { _throw } from 'rxjs/observable/throw';
 import { catchError, retry } from 'rxjs/operators';
 
@@ -63,9 +63,9 @@ export class ConfigService {
 		}
 
 		// return an ErrorObservable with a user-facing error message
-		//return new ErrorObservable('Something bad happened; please try again later.');
+		// return new ErrorObservable('Something bad happened; please try again later.');
 		return _throw('Something bad happened; please try again later.');
-	};
+	}
 
 	makeIntentionalError() {
 		return this.http.get('not/a/real/url')

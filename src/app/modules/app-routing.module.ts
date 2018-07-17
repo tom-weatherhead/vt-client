@@ -12,20 +12,20 @@ import { SidebarTestComponent }         from '../components/sidebar-test/sidebar
 import { ConfigComponent }              from '../components/config/config.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'dashboard',			component: DashboardComponent },
-  // { path: 'detail/:id',			component: HeroDetailComponent },
-  // { path: 'heroes',				component: HeroesComponent },
-  { path: 'universities',		component: UniversitiesComponent },
-  { path: 'university/:id',		component: UniversityDetailComponent },
-  { path: 'charts/:id',			component: UniversityChartComponent },
-  { path: 'sidebar-test',		component: SidebarTestComponent }
-  // , { path: 'observable-demo',		component: ObservableDemoComponent }
-  , { path: 'config',		component: ConfigComponent }
+	{ path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+	{ path: 'dashboard',			component: DashboardComponent },
+	// { path: 'detail/:id',			component: HeroDetailComponent },
+	// { path: 'heroes',				component: HeroesComponent },
+	{ path: 'universities',		component: UniversitiesComponent },
+	{ path: 'university/:id',		component: UniversityDetailComponent },
+	{ path: 'charts/:id',			component: UniversityChartComponent },
+	{ path: 'sidebar-test',		component: SidebarTestComponent }
+	// , { path: 'observable-demo',		component: ObservableDemoComponent }
+	, { path: 'config',		component: ConfigComponent }
 ];
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes) ],
-  exports: [ RouterModule ]
+	imports: [ RouterModule.forRoot(routes) ],
+	exports: [ RouterModule ]
 })
 export class AppRoutingModule {}

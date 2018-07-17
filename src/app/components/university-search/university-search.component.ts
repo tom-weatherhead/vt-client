@@ -12,12 +12,12 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-//import { UniversitySearchService }  from '../../services/university-search/university-search.service';
+// import { UniversitySearchService }  from '../../services/university-search/university-search.service';
 import { UniversityService }		from '../../services/university/university.service';
 import { University }               from '../../models/university';
 
 @Component({
-	selector: 'university-search',
+	selector: 'app-university-search',
 	templateUrl: './university-search.component.html',
 	styleUrls: [ './university-search.component.css' ],
 	providers: [UniversityService]
@@ -41,7 +41,7 @@ export class UniversitySearchComponent implements OnInit {
 			.distinctUntilChanged()   // ignore if next search term is same as previous
 			.switchMap(term => term   // switch to new observable each time the term changes
 				// return the http search observable
-				//? this.universitySearchService.search(term)
+				// ? this.universitySearchService.search(term)
 				? this.universityService.searchUniversities(term)
 				// or the observable of empty universities if there was no search term
 				: Observable.of<University[]>([]))
@@ -53,7 +53,8 @@ export class UniversitySearchComponent implements OnInit {
 	}
 
 	gotoUniversityDetail(university: University): void {
-		let link = ['/university', university.id];
+		const link = ['/university', university.id];
+
 		this.router.navigate(link);
 	}
 }

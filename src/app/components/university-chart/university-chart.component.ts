@@ -2,25 +2,25 @@ import { Component, ChangeDetectorRef }     from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Location }                         from '@angular/common';
 
-import { Observable }                       from 'rxjs';
+// import { Observable }                       from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 
 import { University }                       from '../../models/university';
 import { UniversityService }                from '../../services/university/university.service';
 
 @Component({
-  selector: 'university-chart',
-  templateUrl: './university-chart.component.html' /* ,
-  styleUrls: [ './university-chart.component.css' ] */
+	selector: 'app-university-chart',
+	templateUrl: './university-chart.component.html' /* ,
+	styleUrls: [ './university-chart.component.css' ] */
 })
 export class UniversityChartComponent /* implements OnInit */ {
-	showChart: boolean = false;
+	showChart = false;
 	public chartOptions: any;
 	public chartLabels: string[];
 	public chartType: string;
 	public chartLegend: boolean;
 	public chartData: any[];
-	//private _opened: boolean = false;
+	// private _opened: boolean = false;
 
 	raceLabels: string[] = [
 		'White',
@@ -133,7 +133,7 @@ export class UniversityChartComponent /* implements OnInit */ {
 				responsive: true
 			},
 			labels: universities.map(university => university.shortName),
-			//type: 'bar',
+			// type: 'bar',
 			type: 'barAllU',
 			legend: true,
 			data: [
@@ -156,7 +156,7 @@ export class UniversityChartComponent /* implements OnInit */ {
 				// .subscribe((chartID: number) => {
 				.subscribe((params: ParamMap) => {
 					// let chartID: number = parseInt(params.get('id'));
-					let chartID: number = +params.get('id');
+					const chartID: number = +params.get('id');
 					let chartSettings; // = this.createDefaultChartSettings(universities);
 
 					if (chartID > 0 && chartID <= universities.length) {
@@ -169,15 +169,15 @@ export class UniversityChartComponent /* implements OnInit */ {
 
 					this.showChart = false;
 
-					let oldChartType = this.chartType;
+					const oldChartType = this.chartType;
 
 					this.chartOptions = chartSettings.options;
 					this.chartLabels = chartSettings.labels;
-					//this.chartLabels = this.clone(chartSettings.labels);
+					// this.chartLabels = this.clone(chartSettings.labels);
 					this.chartType = chartSettings.type;
 					this.chartLegend = chartSettings.legend;
 
-					if (oldChartType == 'pie' && this.chartType == 'pie') {
+					if (oldChartType === 'pie' && this.chartType === 'pie') {
 						let clone = JSON.parse(JSON.stringify(this.chartData));
 
 						clone = chartSettings.data;
@@ -191,49 +191,49 @@ export class UniversityChartComponent /* implements OnInit */ {
 					this.changeDetectorRef.detectChanges();			// !!! This is necessary.
 				});
 			});
-  }
+	}
 
-  goBack(): void {
-    this.location.back();
-  }
+	goBack(): void {
+		this.location.back();
+	}
 
-  // Events:
+	// Events:
 
-  public goToChart(chartID: number) : void {
-    this.router.navigate(['/charts', chartID]);
-  }
+	public goToChart(chartID: number): void {
+		this.router.navigate(['/charts', chartID]);
+	}
 
-  public chartClicked(e: any):void {
-    console.log(e);
+	public chartClicked(e: any): void {
+		console.log(e);
 
-    if (e.active && e.active.length) {
-      console.log(e.active[0]);
-      // For a multi-university chart, go to the details page for university/(id = e.active[0].index)
-    }
-  }
+		if (e.active && e.active.length) {
+			console.log(e.active[0]);
+			// For a multi-university chart, go to the details page for university/(id = e.active[0].index)
+		}
+	}
 
-  public chartHovered(e: any):void {
-    console.log(e);
-  }
+	public chartHovered(e: any): void {
+		console.log(e);
+	}
 
-  /* public randomize():void {
-    // Only Change 3 values
-    let data = [
-      Math.round(Math.random() * 100),
-      59,
-      80,
-      (Math.random() * 100),
-      56,
-      (Math.random() * 100),
-      40];
-    let clone = JSON.parse(JSON.stringify(this.barChartData));
-    clone[0].data = data;
-    this.barChartData = clone; */
-    /**
-     * (My guess), for Angular to recognize the change in the dataset
-     * it has to change the dataset variable directly,
-     * so one way around it, is to clone the data, change it and then
-     * assign it;
-     */
-  // }
+	/* public randomize(): void {
+		// Only Change 3 values
+		let data = [
+		Math.round(Math.random() * 100),
+		59,
+		80,
+		(Math.random() * 100),
+		56,
+		(Math.random() * 100),
+		40];
+		let clone = JSON.parse(JSON.stringify(this.barChartData));
+		clone[0].data = data;
+		this.barChartData = clone; */
+		/**
+		* (My guess), for Angular to recognize the change in the dataset
+		* it has to change the dataset variable directly,
+		* so one way around it, is to clone the data, change it and then
+		* assign it;
+		*/
+	// }
 }

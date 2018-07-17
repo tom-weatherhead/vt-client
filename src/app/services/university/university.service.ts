@@ -1,7 +1,7 @@
 import { Injectable }                       from '@angular/core';
 import { HttpClient, HttpHeaders }			from '@angular/common/http';
 
-//import { Observable }                       from 'rxjs';
+// import { Observable }                       from 'rxjs';
 import { Observable }						from 'rxjs/Observable';
 import { of }								from 'rxjs/observable/of';
 import { catchError, map, tap }				from 'rxjs/operators';
@@ -45,11 +45,10 @@ export class UniversityService {
 	constructor(
 		private configService: ConfigService,
 		private http: HttpClient,
-		private messageService: MessageService)
-	{
+		private messageService: MessageService) {
 	}
 
-	getUrl() : Observable<string> {
+	getUrl(): Observable<string> {
 
 		if (this.universitiesUrl) {
 			return Observable.of(this.universitiesUrl);
@@ -82,7 +81,8 @@ export class UniversityService {
 	}
 
 	/** GET university by id. Return `undefined` when id not found */
-	getUniversityNo404<Data>(id: number): Observable<University> {
+	// getUniversityNo404<Data>(id: number): Observable<University> {
+	getUniversityNo404(id: number): Observable<University> {
 		return this.getUrl()
 			.switchMap(universitiesUrl => this.http.get<University>(`${universitiesUrl}/${id}`))
 			.pipe(
@@ -124,7 +124,7 @@ export class UniversityService {
 	//////// Save methods //////////
 
 	/** POST: add a new university to the server */
-	//addUniversity (university: University): Observable<University> {
+	// addUniversity (university: University): Observable<University> {
 	addUniversity(id: number, fullName: string, shortName: string): Observable<University> {
 		const universityBeforePost = {
 			id: id,

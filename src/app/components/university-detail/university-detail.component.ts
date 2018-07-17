@@ -8,7 +8,7 @@ import { University }					from '../../models/university';
 import { UniversityService }			from '../../services/university/university.service';
 
 @Component({
-	selector: 'university-detail',
+	selector: 'app-university-detail',
 	templateUrl: './university-detail.component.html',
 	styleUrls: [ './university-detail.component.css' ]
 })

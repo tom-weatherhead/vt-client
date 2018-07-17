@@ -4,7 +4,7 @@ import { University }        						from '../../models/university';
 import { UniversityService } 						from '../../services/university/university.service';
 
 @Component({
-	selector: 'my-universities',
+	selector: 'app-my-universities',
 	templateUrl: './universities.component.html',
 	styleUrls: [ './universities.component.css' ]
 })
@@ -32,7 +32,7 @@ export class UniversitiesComponent implements OnInit {
 		shortName = shortName.trim();
 
 		if (!fullName || !shortName) {
-			 return;
+			return;
 		}
 
 		const ids = this.universities.map(university => university.id);
@@ -49,17 +49,17 @@ export class UniversitiesComponent implements OnInit {
 		}
 
 		console.log('Adding a university with id', id, ', fullName', fullName, ', shortName', shortName);
-	
+
 		this.universityService.addUniversity(id, fullName, shortName)
 			.subscribe(university => {
 				this.universities.push(university);
 				this.universities.sort((a, b) => a.id - b.id);
 			});
 	}
-	
+
 	delete(university: University): void {
 		this.universities = this.universities.filter(u => u !== university);
-		//this.universityService.deleteUniversity(university).subscribe();
+		// this.universityService.deleteUniversity(university).subscribe();
 		this.universityService.deleteUniversity(university.id).subscribe();
 	}
 }
