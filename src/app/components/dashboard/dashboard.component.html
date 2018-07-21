@@ -25,7 +25,7 @@ Can't bind to 'routerLink' since it isn't a known property of 'a'.
 <div class="grid grid-pad">
 	<a *ngFor="let university of universities" class="col-1-4">
 	<!-- <a *ngFor="let university of universities" [routerLink]="['/university', university.id]" class="col-1-4"> -->
-		<div class="module university">
+		<div class="module university" [routerLink]="['/university', university.id]">
 			<h4>{{university.name}}</h4>
 		</div>
 	</a>
