@@ -30,3 +30,20 @@ Virginia Tech project - Angular client
             ]
           }
         },
+
+Docker: (See https://medium.com/@DenysVuika/your-angular-apps-as-docker-containers-471f570a7f2 )
+
+$ npm run ng serve --open
+	- Then browse to http://localhost:4200
+
+$ npm run build
+	- This runs: ng build --prod
+
+$ docker image build -t vt-client .
+$ docker run -p 3000:80 --rm my-angular-app
+	- Then browse to http://localhost:3000
+
+$ docker-compose up
+	- Then browse to http://localhost:3000
+	- After you're done using the app, clean up via: $ docker-compose down
+	- To really clean up: $ docker-compose down --rmi all

@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  vt-client:
+    build: ./ # Specify the directory of the Dockerfile
+    ports:
+      - "4200:4200" # Specify ports for forwarding
+    links:
+      - vt-server
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - vt-server
+
+  vt-server:
+    build: ../vt-server/ # Specify the directory of the Dockerfile
+    ports:
+      - "3000:3000" # Specify ports for forwarding
+    links:
+      - database # Link this service to the database service
+    volumes:
+      - .:/usr/src/app # ? Or ../vt-server/:/usr/src/server ?
+    depends_on:
+      - database
+
+  database:
+    image: mongo:latest
